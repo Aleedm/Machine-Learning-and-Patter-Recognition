@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from project.utils import vrow, cov
+from project.gaussian_density_estimation import logpdf_GAU_ND, loglikelihood
 
 
 def plot_hist(feature, L, bins=10, threshold=None):
@@ -42,3 +44,23 @@ def plot_binary_classification_results(D, threshold, L):
     plt.legend(loc="lower right")
 
     plt.show()
+
+
+def plot_gau_den_est(D_t, D_f, project = None):
+    plt.figure()
+    plt.hist(D_t.ravel(), bins=25, density=True, alpha=0.5, color="blue", label="True")
+    C_t, mu_t = cov(vrow(D_t), mu=True)
+    XPlot = np.linspace(-4, 4, 1000)
+    plt.plot(XPlot.ravel(), np.exp(logpdf_GAU_ND(vrow(XPlot), mu_t, C_t)), color="blue")
+    
+    plt.hist(D_f.ravel(), bins=25, density=True, alpha=0.5, color="red", label="False")
+    C_f, mu_f = cov(vrow(D_f), mu=True)
+    XPlot = np.linspace(-4, 4, 1000)
+    plt.plot(XPlot.ravel(), np.exp(logpdf_GAU_ND(vrow(XPlot), mu_f, C_f)), color="red")
+    plt.legend()
+    #res = logpdf_GAU_ND(vrow(D), mu, C)
+    #max_d, min_d = np.max(D), np.min(D)
+    #XPlot = np.linspace(min_d, max_d, D.shape[0])
+    #plt.plot(XPlot.ravel(), np.exp(res))
+    if(project is not None):
+        print(f"likelihood of class {project[0]} for feature {project[1]}: {loglikelihood(vrow(D_t), mu_t, C_t)}")

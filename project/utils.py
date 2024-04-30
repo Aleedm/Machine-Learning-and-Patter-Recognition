@@ -32,10 +32,12 @@ def load(fname):
     return np.hstack(DList), np.array(labelsList, dtype=np.int32)
 
 
-def cov(D):
-    mu = D.mean(axis=1)
-    DC = D - vcol(mu)
+def cov(D, mu = False):
+    mu_ = D.mean(axis=1)
+    DC = D - vcol(mu_)
     C = np.dot(DC, DC.T) / D.shape[1]
+    if mu:
+        return C, mu_
     return C
 
 

@@ -31,6 +31,8 @@ def between_cov(D, labels):
 def LDA(D, labels, m):
     SW = within_cov(D, labels)
     SB = between_cov(D, labels)
+    #print(f"SB: {SB}, \nSW: {SW}")
+    
     _, U = scipy.linalg.eigh(SB, SW)
     W = U[:, ::-1][:, 0:m]
     return np.dot(W.T, D), W
@@ -45,16 +47,18 @@ def binary_classification(D, L, m, pca=True, debug=True):
     DTRP_lda, W = LDA(DTR, LTR, 1)
     mean_class_false = DTRP_lda[0, LTR == 0].mean()
     mean_class_true = DTRP_lda[0, LTR == 1].mean()
-
-    if mean_class_false < mean_class_true:
+    #print(f"Mean class false: {mean_class_false}, mean class true: {mean_class_true}")
+    if mean_class_false > mean_class_true:
+        #print("asd")
         W = -W
     threshold = (mean_class_false + mean_class_true) / 2
-
     DVALP_lda = np.dot(W.T, DVAL)
-
+    #print(f"Threshold: {threshold}")
+    #print(f"DVALP_lda: {DVALP_lda}")
+    #print(f"DTRP_lda: {DTRP_lda}")
     PVAL = np.zeros(shape=LVAL.shape, dtype=np.int32)
-    PVAL[DVALP_lda[0] >= threshold] = 0
-    PVAL[DVALP_lda[0] < threshold] = 1
+    PVAL[DVALP_lda[0] >= threshold] = 1
+    PVAL[DVALP_lda[0] < threshold] = 0
     if debug:
         plot_binary_classification_results(DVALP_lda[0], threshold, LVAL)
         plot_hist(DVALP_lda[0], LVAL, bins=50, threshold=threshold)
