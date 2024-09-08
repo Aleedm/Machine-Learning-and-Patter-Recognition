@@ -38,6 +38,7 @@ from project.LDA import LDA, binary_classification
 import scipy
 from project.logistic_regression import logreg_obj, logreg_obj_wei
 import matplotlib.pyplot as plt
+import argparse
 
 
 def lab_2():
@@ -1089,34 +1090,52 @@ def lab_11():
     )
 
 
-run_all_lab = False
-lab_to_run = 11
-if run_all_lab:
-    lab_2()
-    lab_3()
-    lab_4()
-    lab_5()
-    lab_7()
-    lab_8()
-    lab_9()
-    lab_10()
-    lab_11()
-else:
-    if lab_to_run == 2:
+def main(run_all_lab, lab_to_run):
+    if run_all_lab:
         lab_2()
-    elif lab_to_run == 3:
         lab_3()
-    elif lab_to_run == 4:
         lab_4()
-    elif lab_to_run == 5:
         lab_5()
-    elif lab_to_run == 7:
         lab_7()
-    elif lab_to_run == 8:
         lab_8()
-    elif lab_to_run == 9:
         lab_9()
-    elif lab_to_run == 10:
         lab_10()
-    elif lab_to_run == 11:
         lab_11()
+    else:
+        if lab_to_run == 2:
+            lab_2()
+        elif lab_to_run == 3:
+            lab_3()
+        elif lab_to_run == 4:
+            lab_4()
+        elif lab_to_run == 5:
+            lab_5()
+        elif lab_to_run == 7:
+            lab_7()
+        elif lab_to_run == 8:
+            lab_8()
+        elif lab_to_run == 9:
+            lab_9()
+        elif lab_to_run == 10:
+            lab_10()
+        elif lab_to_run == 11:
+            lab_11()
+        else:
+            print(f"Lab {lab_to_run} doesn't exist!")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Esegui i laboratori specificati.")
+    parser.add_argument(
+        "--run_all_lab", action="store_true", help="Esegui tutti i laboratori"
+    )
+    parser.add_argument(
+        "--lab_to_run",
+        type=int,
+        default=11,
+        help="Numero del laboratorio da eseguire (se run_all_lab è False)",
+    )
+
+    args = parser.parse_args()
+
+    main(args.run_all_lab, args.lab_to_run)
