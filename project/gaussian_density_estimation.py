@@ -30,7 +30,7 @@ def logpdf_GAU_ND(x, mu, C):
     factor1 = -(M / 2) * np.log(2 * np.pi)
     factor2 = -0.5 * slogdet
 
-    diff = x.T - mu  # x.T shape (n, M), mu.T shape (1, M), diff shape (n, M)
+    diff = x.T - mu.T  # x.T shape (n, M), mu.T shape (1, M), diff shape (n, M)
 
     product = np.dot(C_inv, diff.T)
     # C_inv shape (M, M), diff.T shape (M, n), product shape (M, n)
@@ -41,3 +41,9 @@ def logpdf_GAU_ND(x, mu, C):
 
 def loglikelihood(x, mu, C):
     return np.sum(logpdf_GAU_ND(x, mu, C))
+
+
+def get_llr(DVAL, mus, Cs):
+    densities = np.array([logpdf_GAU_ND(DVAL, mus[i], Cs[i]) for i in range(len(mus))])
+    llr = densities[1] - densities[0]
+    return llr
